@@ -6,7 +6,7 @@ MD5_LENGTH = 32
 SHA1_LENGTH = 40
 SHA256_LENGTH = 64
  
-def from_file_hash_to_markdown_table(api_key, hash):
+def from_file_hash_to_markdown_table(api_key, hash) -> str:
     try:
         if (api_key == None) or (len(hash) not in [MD5_LENGTH, SHA1_LENGTH, SHA256_LENGTH]):
             raise ValueError
@@ -26,7 +26,7 @@ def from_file_hash_to_markdown_table(api_key, hash):
             file_information, last_analysis_status, last_analysis_results = extract_data(response_json['data']['attributes'])
             return get_markdown_table(file_information, last_analysis_status, last_analysis_results)
  
-def extract_data(data):
+def extract_data(data) -> dict, dict, list:
     file_information = {'MD5': data['md5'], 'SHA-1': data['sha1'], 'SHA-256': data['sha256']}
     last_analysis_status = build_last_analysis_status_dict(data['last_analysis_stats'])
     last_analysis_results = build_last_analysis_results_list(data['last_analysis_results'])
@@ -34,7 +34,7 @@ def extract_data(data):
  
 # Gets the json formatted response from requests
 # Returns the last analysis status table as dictionary variable
-def build_last_analysis_status_dict(stats):
+def build_last_analysis_status_dict(stats) -> dict:
     count_total_analysis_scans = 0
     for analysis in stats:
         count_total_analysis_scans = count_total_analysis_scans + stats[analysis]
@@ -45,7 +45,7 @@ def build_last_analysis_status_dict(stats):
  
 # Gets the json formatted response from requests
 # Returns the last analysis results table as set of dictionaries variable
-def build_last_analysis_results_list(results):
+def build_last_analysis_results_list(results) -> list:
     last_analysis_results_list = []
     for analysis in results:
         if results[analysis]['result'] != None:
@@ -56,7 +56,7 @@ def build_last_analysis_results_list(results):
     return last_analysis_results_list
  
 # Returns markdown table format as requested in home exercise
-def get_markdown_table(file_information, last_analysis_status, last_analysis_results):
+def get_markdown_table(file_information, last_analysis_status, last_analysis_results) -> str:
     '''
     Markdown table format is: 
  
@@ -87,14 +87,14 @@ def get_markdown_table(file_information, last_analysis_status, last_analysis_res
               newline_token + '# Last Analysis Results', markdown_table_3]
     return newline_token.join(titles)
  
-def get_formatted_markdown_header(some_dict, sep_token, newline_token):
+def get_formatted_markdown_header(some_dict, sep_token, newline_token) -> str:
     formatted_string = ''
     for key in some_dict:
         formatted_string = formatted_string + sep_token + key
     formatted_string = formatted_string + sep_token
     return newline_token.join([formatted_string, ((sep_token + '-') * len(some_dict)) + sep_token])
  
-def create_formatted_markdown_content(some_dict, sep_token):
+def create_formatted_markdown_content(some_dict, sep_token) -> str:
     formatted_string = ''
     for value in some_dict:
         if isinstance(value, str) == False:
@@ -103,7 +103,7 @@ def create_formatted_markdown_content(some_dict, sep_token):
     formatted_string = formatted_string + sep_token
     return formatted_string
  
-def create_formatted_markdown_list_content(some_dict, sep_token, newline_token):
+def create_formatted_markdown_list_content(some_dict, sep_token, newline_token) -> str:
     formatted_string = ''
     for value in some_dict:
         formatted_string = newline_token.join([formatted_string, create_formatted_markdown_content(value, sep_token)])
